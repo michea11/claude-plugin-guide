@@ -1,231 +1,452 @@
 # ECC + Superpowers 协同实战
 
-两个插件互补：**Superpowers 管流程（怎么做），ECC 管执行（用什么做）**。本文以本项目（Claude Code 插件学习指南文档站）的真实开发过程为例，展示两者如何配合。
+两个插件互补：**Superpowers 管流程（怎么做），ECC 管执行（用什么做）**。本文通过一个真实开发场景，展示两者如何配合作战。
 
 ## 分工总览
 
 | 环节 | Superpowers 负责 | ECC 负责 |
 |------|------|------|
-| 需求澄清 | brainstorming（苏格拉底式提问） | planner agent（技术可行性） |
+| 需求澄清 | brainstorming（苏格拉底式提问） | `/plan`（技术可行性分析） |
 | 方案设计 | brainstorming → spec 文档 | architect agent（架构审阅） |
 | 任务拆解 | writing-plans（2-5 分钟粒度） | — |
-| 编码执行 | subagent-driven-development | code-reviewer / build-error-resolver |
-| 质量保障 | verification-before-completion | /build-fix / security-scan |
+| 编码执行 | subagent-driven-development | `/tdd` + `/code-review` |
+| 构建修复 | — | `/build-fix`（语言专用构建修复） |
+| 质量保障 | verification-before-completion | `/verify` + `/security-scan` |
 | 审查合并 | requesting-code-review | code-reviewer agent |
-| 发布收尾 | finishing-a-development-branch | deploy 工作流 |
+| 发布收尾 | finishing-a-development-branch | CI/CD 工作流 |
 
 ---
 
-## 实战案例：构建本插件文档站
+## 实战案例：开发 Docusaurus 自定义组件
 
-### 项目背景
+### 场景
 
-目标：搭建一个 Docusaurus 中文文档站，系统讲解 Claude Code 插件生态，并开源部署到 GitHub Pages。
+在一个 Docusaurus 文档站中，需要开发一个 **插件命令速查表组件**，支持搜索过滤和分类展示。用户输入命令名即可快速定位。
 
-技术栈：Docusaurus 3 + React 19 + TypeScript + GitHub Actions
+技术栈：Docusaurus 3 + React 19 + TypeScript
 
-### 阶段 1：需求澄清 — brainstorming
+### 阶段 1：需求澄清 — brainstorming + /plan
 
-用 Superpowers 的 `brainstorming` 启动项目。它不会直接写代码，而是通过一次一个问题的对话，帮你理清真正要做的事。
-
-**实际对话流程：**
+**Step 1：Superpowers brainstorming 澄清需求**
 
 ```
-用户: 我想要把这个项目在github开源，并且部署在github服务器上
+用户: 我要给文档站加一个命令速查组件，能搜索过滤
 
-brainstorming: 先探索项目结构 → 你的 GitHub 用户名是什么？
-用户: michea11
+brainstorming: 先看看现有项目结构...
+（检查 src/components/ 目录、docusaurus.config.ts）
 
-brainstorming: 仓库名叫 claude-plugin-site 还是其他？
-用户: 你推荐什么？
+brainstorming: 这个组件的数据从哪来？是写死的静态数据还是动态加载？
+用户: 静态 JSON 就行
 
-brainstorming: 推荐保留 claude-plugin-site，零改动成本，语义清晰
-用户: 要 guide
+brainstorming: 搜索行为是什么样的？输入即过滤，还是按回车搜索？
+用户: 输入即过滤
 
-brainstorming: 好的，claude-plugin-guide。检查一下有没有敏感信息...
-（自动扫描 .claude/ 目录，确认无 API key 泄露）
+brainstorming: 需要哪些分类？全部分类、Skill、Agent、Command、Hook、MCP？
+用户: 对，这 5 类
 
-brainstorming: 方案总结 — ① 创建仓库 ② 更新配置 ③ 推送 ④ 启用 Pages
+brainstorming: 方案 — 一个 React 组件 CommandTable，接收 JSON 数据，
+支持实时过滤 + 分类标签切换。保存为 spec？
 用户: 同意
 ```
 
-:::tip[关键价值]
-brainstorming 在这里做了 3 件人工容易漏的事：
-1. **追问命名**：仓库名直接影响 URL，改一个字符要改 6 处配置
-2. **安全检查**：推送前自动扫描密钥泄露
-3. **方案显式化**：4 步清清楚楚，没有隐式假设
+:::tip[为什么 brainstorming 先于 /plan]
+brainstorming 用对话澄清"要做什么"，产出的是需求文档。`/plan` 分析"技术上怎么做"，产出的是实现计划。两者顺序不能颠倒 — 需求没搞清楚就做技术规划，大概率要返工。
 :::
 
-### 阶段 2：技术执行 — ECC 工具链
+**Step 2：ECC `/plan` 分析技术可行性**
 
-设计方案确认后，进入实施。这里 ECC 和 Superpowers 开始并行发挥作用。
-
-**配置更新（Superpowers 派发 + ECC 审查）：**
+brainstorming 完成后，调用 ECC 的 `/plan` 命令，让 planner agent 评估技术方案：
 
 ```bash
-# Superpowers 的 dispatching-parallel-agents 并行处理多个独立任务：
-# 任务 A：更新 docusaurus.config.ts（6 处占位符替换）
-# 任务 B：重写 README.md（中英双语）
-# 任务 C：更新 package.json（项目名）
+/plan 在 Docusaurus 项目中开发 CommandTable 组件：
+- React 19 + TypeScript
+- 接收 JSON 数据，支持实时文本过滤
+- 5 个分类标签切换（全部/Skill/Agent/Command/Hook/MCP）
+- 响应式布局，移动端友好
 ```
 
-每个任务完成后，ECC 的 `code-reviewer` agent 自动审查变更：
+Planner agent 输出：
+
+```markdown
+## 实现计划：CommandTable 组件
+
+### 阶段 1：定义类型和数据结构
+- Command 接口：name, description, category, plugin
+- 示例数据：5 条命令覆盖 5 个分类
+
+### 阶段 2：编写测试（TDD）
+- 渲染测试：所有数据正确显示
+- 过滤测试：文本搜索筛选正确
+- 分类测试：标签切换筛选正确
+- 边界测试：空数据、无匹配结果
+
+### 阶段 3：实现组件
+- CommandTable 主组件
+- 搜索输入框 + 分类标签栏
+- 过滤逻辑（文本 + 分类联合过滤）
+
+### 风险
+- MEDIUM：Docusaurus 的 BrowserOnly 包裹可能影响 SSR
+- LOW：大数据量下的搜索性能
+
+等待确认：是否按此计划进行？
+```
+
+---
+
+### 阶段 2：任务拆解 — writing-plans
+
+Superpowers `writing-plans` 把 `/plan` 的输出拆成 2-5 分钟粒度的独立任务：
 
 ```
-实际审查发现：
-- docusaurus.config.ts:6 → url 从 your-github-username 更新为 michea11 ✅
-- README.md → 新增中英双语完整文档 ✅
-- package.json:2 → name 同步更新 ✅
-- 无安全风险，无遗漏占位符
+任务 1: 定义 Command 类型 + 创建示例数据      [2 分钟]
+任务 2: 编写 4 个测试用例（RED 阶段）         [5 分钟]
+任务 3: 实现 CommandTable 组件（GREEN 阶段）  [8 分钟]
+任务 4: 重构优化（REFACTOR 阶段）             [3 分钟]
+任务 5: 集成到 Docusaurus 页面                [3 分钟]
 ```
 
-**Git 操作与部署：**
+---
+
+### 阶段 3：编码执行 — ECC `/tdd` + `/code-review`
+
+这是 ECC 发挥核心价值的阶段。每个任务都走 `RED → GREEN → REFACTOR → REVIEW` 循环。
+
+**任务 1-2：定义类型 + 写测试（RED）**
+
+`/tdd` 命令启动 tdd-guide agent，强制测试先行：
 
 ```bash
-# 推送遇到 SSH 认证问题 → ECC 诊断
-git push → Host key verification failed
-
-# ECC 诊断链路：
-1. 检查 known_hosts → 不存在
-2. 创建 .ssh/known_hosts + ssh-keyscan github.com
-3. 测试 ssh -T git@github.com → Permission denied (publickey)
-4. 定位根因：未配置 SSH key → 引导用户配置
-5. 配置完成后推送成功
+/tdd 按计划实现 CommandTable 组件，先写测试
 ```
 
-**部署工作流更新：**
+```typescript
+// src/components/CommandTable/types.ts
+export interface Command {
+  name: string
+  description: string
+  category: 'skill' | 'agent' | 'command' | 'hook' | 'mcp'
+  plugin: string
+}
 
-用户选择了 GitHub Actions 部署方式，原有 `peaceiris/actions-gh-pages` 不兼容。需要更新为官方 actions：
-
-```yaml
-# 更新前：第三方 action，依赖 gh-pages 分支
-- uses: peaceiris/actions-gh-pages@v3
-  with:
-    github_token: ${{ secrets.GITHUB_TOKEN }}
-    publish_dir: ./build
-
-# 更新后：GitHub 官方 actions，原生 Pages 支持
-- uses: actions/configure-pages@v4
-- uses: actions/upload-pages-artifact@v3
-  with:
-    path: ./build
-- uses: actions/deploy-pages@v4
+// src/components/CommandTable/__tests__/data.ts
+export const testData: Command[] = [
+  { name: '/tdd', description: '测试驱动开发', category: 'command', plugin: 'ecc' },
+  { name: '/code-review', description: '代码审查', category: 'command', plugin: 'ecc' },
+  { name: '/build-fix', description: '构建修复', category: 'command', plugin: 'ecc' },
+  { name: 'brainstorming', description: '需求澄清', category: 'skill', plugin: 'superpowers' },
+  { name: 'code-reviewer', description: '代码审查专家', category: 'agent', plugin: 'ecc' },
+]
 ```
 
-:::info[ECC 在此阶段的价值]
-- code-reviewer 捕获了配置遗漏
-- 系统化的 SSH 诊断链路节省了人工排查时间
-- 工作流更新一步到位，部署一次成功
+```typescript
+// src/components/CommandTable/__tests__/CommandTable.test.tsx
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { CommandTable } from '../CommandTable'
+import { testData } from './data'
+
+describe('CommandTable', () => {
+  it('渲染所有命令数据', () => {
+    render(<CommandTable data={testData} />)
+
+    expect(screen.getByText('/tdd')).toBeInTheDocument()
+    expect(screen.getByText('/code-review')).toBeInTheDocument()
+    expect(screen.getByText('brainstorming')).toBeInTheDocument()
+  })
+
+  it('文本搜索过滤命令', async () => {
+    render(<CommandTable data={testData} />)
+
+    await userEvent.type(screen.getByPlaceholderText('搜索命令...'), 'tdd')
+
+    expect(screen.getByText('/tdd')).toBeInTheDocument()
+    expect(screen.queryByText('/code-review')).not.toBeInTheDocument()
+    expect(screen.queryByText('brainstorming')).not.toBeInTheDocument()
+  })
+
+  it('分类标签切换过滤', async () => {
+    render(<CommandTable data={testData} />)
+
+    await userEvent.click(screen.getByText('Skill'))
+
+    expect(screen.getByText('brainstorming')).toBeInTheDocument()
+    expect(screen.queryByText('/tdd')).not.toBeInTheDocument()
+    expect(screen.queryByText('code-reviewer')).not.toBeInTheDocument()
+  })
+
+  it('空数据时显示提示', () => {
+    render(<CommandTable data={[]} />)
+
+    expect(screen.getByText('没有匹配的命令')).toBeInTheDocument()
+  })
+})
+```
+
+运行测试确认 RED：
+
+```bash
+npm test -- CommandTable
+# FAIL  src/components/CommandTable/__tests__/CommandTable.test.tsx
+#   CommandTable
+#     ✕ 渲染所有命令数据
+#     ✕ 文本搜索过滤命令
+#     ✕ 分类标签切换过滤
+#     ✕ 空数据时显示提示
+```
+
+:::warning[RED 是必须的]
+如果跳过 RED 直接写实现，测试只能"验证已有代码"，无法验证行为是否正确。tdd-guide agent 会阻止跳过此步骤。
 :::
 
-### 阶段 3：质量保障 — verification + review
+**任务 3：最小实现（GREEN）**
 
-部署成功后，进入维护优化阶段。
+```typescript
+// src/components/CommandTable/CommandTable.tsx
+import { useState, useMemo } from 'react'
+import type { Command } from './types'
 
-**项目健康检查：**
+const CATEGORIES = ['全部', 'Skill', 'Agent', 'Command', 'Hook', 'MCP'] as const
 
-用 Superpowers `verification-before-completion` 做全面检查：
+interface Props {
+  data: Command[]
+}
+
+export function CommandTable({ data }: Props) {
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState<string>('全部')
+
+  const filtered = useMemo(() => {
+    return data.filter((cmd) => {
+      const matchText =
+        cmd.name.toLowerCase().includes(query.toLowerCase()) ||
+        cmd.description.toLowerCase().includes(query.toLowerCase())
+      const matchCategory =
+        category === '全部' || cmd.category === category.toLowerCase()
+      return matchText && matchCategory
+    })
+  }, [data, query, category])
+
+  if (filtered.length === 0) {
+    return (
+      <div>
+        <input
+          placeholder="搜索命令..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <div className="categories">
+          {CATEGORIES.map((cat) => (
+            <button key={cat} onClick={() => setCategory(cat)}>
+              {cat}
+            </button>
+          ))}
+        </div>
+        <p>没有匹配的命令</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <input
+        placeholder="搜索命令..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <div className="categories">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setCategory(cat)}
+            style={{ fontWeight: category === cat ? 'bold' : 'normal' }}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>名称</th>
+            <th>描述</th>
+            <th>分类</th>
+            <th>插件</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filtered.map((cmd) => (
+            <tr key={cmd.name}>
+              <td><code>{cmd.name}</code></td>
+              <td>{cmd.description}</td>
+              <td>{cmd.category}</td>
+              <td>{cmd.plugin}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+```
+
+运行测试确认 GREEN：
+
+```bash
+npm test -- CommandTable
+# PASS  src/components/CommandTable/__tests__/CommandTable.test.tsx
+#   CommandTable
+#     ✓ 渲染所有命令数据
+#     ✓ 文本搜索过滤命令
+#     ✓ 分类标签切换过滤
+#     ✓ 空数据时显示提示
+```
+
+**任务 4：重构（REFACTOR）**
+
+测试全绿后，安全重构。ECC 的 code-reviewer agent 审查代码：
+
+```bash
+/code-review
+```
+
+```
+Code Review Report:
+- ⚠️ SearchInput 和 CategoryBar 逻辑内嵌在主组件中，建议提取为独立组件
+- ⚠️ 分类高亮样式使用内联 style，建议改用 CSS 类名
+- ✅ 过滤逻辑使用 useMemo 优化
+- ✅ 类型定义完整
+```
+
+根据审查意见重构：
+
+```typescript
+// 重构后提取 CategoryBar 组件
+function CategoryBar({
+  current,
+  onSelect,
+}: {
+  current: string
+  onSelect: (cat: string) => void
+}) {
+  return (
+    <div className="command-table__categories">
+      {CATEGORIES.map((cat) => (
+        <button
+          key={cat}
+          className={`command-table__category ${current === cat ? 'is-active' : ''}`}
+          onClick={() => onSelect(cat)}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+**任务 5：集成到页面**
+
+如果集成时遇到构建错误，ECC 的 `/build-fix` 接管：
+
+```bash
+# 假设构建报错
+npm run build
+# Error: Module not found: Can't resolve './CommandTable'
+
+# 启动 /build-fix
+/build-fix
+# build-error-resolver agent 诊断：
+# 1. 检查导入路径 → 路径错误
+# 2. 修正导入 → ./CommandTable/CommandTable
+# 3. 重新构建 → 通过
+```
+
+---
+
+### 阶段 4：质量保障 — verification + review
+
+Superpowers `verification-before-completion` 做最终检查：
 
 ```
 检查清单：
-☑ 站点可访问（HTTP 200）
-☑ LICENSE 文件存在
-☑ .gitignore 覆盖本地配置目录
-☑ Git 身份配置正确
-☒ CONTRIBUTING.md 缺失
-☒ .claude/settings.local.json 被 git 追踪
+☑ 所有测试通过（4/4）
+☑ 覆盖率 92%（> 80%）
+☑ 构建成功
+☒ 缺少组件使用文档
 ```
 
-**修复循环：**
-
-每发现一个问题，ECC 执行 → Superpowers 验证：
-
-```
-问题 1: 缺少 LICENSE 和 CONTRIBUTING.md
-  → ECC 创建 MIT LICENSE + 中英双语 CONTRIBUTING.md
-  → Superpowers 验证：文件存在，内容完整 ✅
-
-问题 2: .claude/ 目录被 git 追踪
-  → ECC 更新 .gitignore + git rm --cached
-  → Superpowers 验证：git status 干净 ✅
-
-问题 3: Git 身份显示 yw@ywdeMacBook-Pro.local
-  → 引导用户 git config --global user.name/email
-  → Superpowers 验证：michea11 / 873130539@qq.com ✅
+```bash
+# 补充文档后，再次验证
+/verify
+# VERIFICATION: PASS ✅
 ```
 
-### 阶段 4：收尾 — finishing
+---
 
-```
-finishing-a-development-branch 流程：
-1. 确认所有变更已提交推送 ✅
-2. 确认 GitHub Actions 部署成功 ✅
-3. 确认站点可访问 ✅
-4. 输出项目交付清单
-```
+## 本例中 ECC 的具体作用
+
+回顾整个流程，ECC 在以下环节直接参与执行：
+
+| 步骤 | ECC 命令 | 具体做了什么 |
+|------|---------|------------|
+| 技术分析 | `/plan` | planner agent 评估可行性 + 识别 SSR 风险 |
+| 测试驱动 | `/tdd` | tdd-guide agent 强制执行 RED→GREEN→REFACTOR |
+| 代码审查 | `/code-review` | code-reviewer 发现组件耦合和内联样式问题 |
+| 构建修复 | `/build-fix` | build-error-resolver 诊断并修复导入路径错误 |
+| 全面验证 | `/verify` | 构建 + 类型 + 测试 + 覆盖率的全量检查 |
+
+Superpowers 负责**编排**这些 ECC 命令的调用时机，ECC 负责**执行**每个命令的具体工作。
 
 ---
 
 ## 协同要点
 
-### 1. 流程归 Superpowers，执行归 ECC
-
-不要混淆两者。Superpowers 告诉你"现在该做什么"，ECC 帮你"做这件事"。
+### 1. brainstorming 在前，/plan 在后
 
 ```
-❌ 错误：用 brainstorming 直接写代码
-✅ 正确：brainstorming 产出方案 → writing-plans 拆任务 → ECC agents 执行
+❌ 错误：拿到需求直接 /plan，技术方案基于不完整的需求
+✅ 正确：brainstorming 产出 spec → /plan 基于 spec 评估可行性
 ```
 
-### 2. 安全扫描要趁早
-
-在 brainstorming 阶段就做安全检查（如 `.claude/` 目录扫描），而不是等到推送前。本案例中，brainstorming 主动检查了敏感信息，避免了将本地配置推上 GitHub。
-
-### 3. 每次变更后验证
-
-不是"全部做完再检查"，而是"改一点验证一点"：
+### 2. /tdd 不做架构决策，brainstorming 不写代码
 
 ```
-改配置 → 构建验证 → 改 README → 审查验证 → 改工作流 → 部署验证
+brainstorming → writing-plans：回答"做什么、怎么做"
+/plan → /tdd → /code-review：回答"用什么技术、写什么代码"
 ```
+
+### 3. 改一点验证一点
+
+```
+/tdd 修改代码 → /code-review 审查 → /build-fix（如有问题）→ /verify 验证
+```
+
+不是"全部做完再检查"，而是每步都验证。
 
 ### 4. 利用并行能力
 
 独立任务用 `dispatching-parallel-agents` 并行执行：
 
 ```
-更新 docusaurus.config.ts ──┐
-重写 README.md         ────┼── 并行 → 统一提交
-更新 package.json       ────┘
+任务 A: 创建 types.ts    ──┐
+任务 B: 创建测试数据      ──┼── 并行 → 统一验证
+任务 C: 创建测试用例      ──┘
 ```
 
 ---
 
 ## 场景速查
 
-| 你要做什么 | 启动命令/技能 | 说明 |
-|-----------|-------------|------|
-| 新项目从零开始 | `brainstorming` | 澄清需求 → 设计方案 |
-| 实现具体功能 | `writing-plans` → ECC `/tdd` | 计划 → TDD → 审查 |
-| 修复 Bug | ECC `/tdd` + `systematic-debugging` | 先定位根因再修复 |
-| 代码审查 | `requesting-code-review` | 调用 ECC code-reviewer |
-| 开源准备 | `brainstorming` + 安全检查 | 确认无密钥泄露 |
-| 部署上线 | ECC CI/CD 配置 + `verification` | 构建 → 部署 → 验证 |
-| 重构优化 | `brainstorming` → ECC `/refactor-clean` | 先设计再动手 |
-
----
-
-## 本项目完整时间线
-
-| 阶段 | 使用的工具 | 耗时 | 产出 |
-|------|-----------|------|------|
-| 需求澄清 | Superpowers brainstorming | 10 分钟 | 开源方案 + 命名决策 |
-| 配置更新 | ECC Edit + Superpowers 并行派发 | 5 分钟 | 6 处配置 + README |
-| SSH 调试 | ECC 诊断链路 | 5 分钟 | 推送成功 |
-| 部署配置 | ECC 工作流更新 | 3 分钟 | 自动部署上线 |
-| 质量检查 | Superpowers verification | 5 分钟 | 4 个问题发现并修复 |
-| 收尾交付 | Superpowers finishing | 2 分钟 | 项目清单 |
-| **合计** | | **~30 分钟** | 从零到开源上线 |
+| 你要做什么 | 启动方式 | 说明 |
+|-----------|---------|------|
+| 新功能从零开始 | `brainstorming` → `/plan` → `/tdd` | 全流程 |
+| 修复 Bug | `/tdd` + `systematic-debugging` | 先写复现测试 |
+| 代码审查 | `/code-review` | 自动审查 |
+| 构建报错 | `/build-fix` | 自动诊断修复 |
+| 安全审计 | `/security-scan` | AgentShield 扫描 |
+| 开源发布 | `brainstorming` + `/verify` | 防密钥泄露 |
+| 重构优化 | `brainstorming` → `/refactor-clean` | 先设计再动手 |
 
 ---
 
@@ -234,4 +455,4 @@ finishing-a-development-branch 流程：
 - [Superpowers 核心流程链](workflow-chain) — 理解 15 个 skill 的完整编排
 - [ECC 核心工作流](../ecc/core-workflow) — plan → tdd → review → build 详解
 - [ECC 实战示例](../ecc/examples) — 代码级开发案例
-- [插件开发教程](../dev-guide/create-skill) — 创建自己的 Skill
+- [/tdd 详解](../ecc/skills/tdd-workflow) — TDD 工作流的每个步骤
