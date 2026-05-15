@@ -1,75 +1,71 @@
 # ECC Agents 速查
 
-ECC 有 60+ 专业 agent，按任务类型分派。
+ECC 有 60+ 专业 agent，由主 AI 自动派发。
+
+:::tip[怎么用 Agent]
+你不需要手动派发 agent。正常对话，AI 会在合适的时机自动选择合适的 agent 处理任务。
+:::
 
 ## 规划与设计
 
-| Agent | 模型 | 用途 |
-|------|------|------|
-| planner | sonnet | 需求分析和实现计划 |
+| Agent | 模型 | 何时派发 |
+|------|------|---------|
+| planner | sonnet | 需求分析，输出实现计划 |
 | architect | sonnet/opus | 系统架构设计 |
-| code-architect | sonnet | 代码级架构设计 |
-| code-explorer | haiku | 快速代码库探索 |
+| code-architect | sonnet | 代码级架构和模块划分 |
+| code-explorer | haiku | 快速搜索和探索代码库 |
 
 ## 代码审查
 
-| Agent | 模型 | 用途 |
-|------|------|------|
-| code-reviewer | sonnet | 通用代码审查 |
-| security-reviewer | sonnet | 安全漏洞检测 |
-| python-reviewer | sonnet | Python 专项 |
-| go-reviewer | sonnet | Go 专项 |
-| kotlin-reviewer | sonnet | Kotlin 专项 |
-| rust-reviewer | sonnet | Rust 专项 |
-| cpp-reviewer | sonnet | C++ 专项 |
-| typescript-reviewer | sonnet | TypeScript 专项 |
-| java-reviewer | sonnet | Java 专项 |
-| django-reviewer | sonnet | Django 专项 |
-| fastapi-reviewer | sonnet | FastAPI 专项 |
-| flutter-reviewer | sonnet | Flutter 专项 |
-| swift-reviewer | sonnet | Swift 专项 |
-| database-reviewer | sonnet | SQL 审查 |
+| Agent | 专长 |
+|------|------|
+| code-reviewer | 通用审查 |
+| security-reviewer | 安全漏洞 |
+| python/go/kotlin/rust/cpp-reviewer | 语言专项 |
+| django/fastapi/flutter/swift-reviewer | 框架专项 |
+| typescript/java/csharp/fsharp-reviewer | 语言专项 |
+| database-reviewer | SQL 审查 |
+| healthcare-reviewer | 医疗代码 |
+| mle-reviewer | ML 工程 |
+
+:::info[共计 14+ 审查 agent]
+每种语言/框架都有专门的审查 agent——因为它们需要关注不同的模式和陷阱。
+:::
 
 ## 构建修复
 
-| Agent | 模型 | 用途 |
-|------|------|------|
-| build-error-resolver | sonnet | 通用构建修复 |
-| go-build-resolver | haiku | Go 构建 |
-| kotlin-build-resolver | haiku | Kotlin 构建 |
-| rust-build-resolver | haiku | Rust 构建 |
-| cpp-build-resolver | haiku | C++ 构建 |
-| java-build-resolver | haiku | Java 构建 |
-| dart-build-resolver | haiku | Dart 构建 |
-| django-build-resolver | haiku | Django 构建 |
+| Agent | 专长 |
+|------|------|
+| build-error-resolver | 通用构建 |
+| go/kotlin/rust/cpp/java-build-resolver | 语言专项 |
+| dart/django/pytorch-build-resolver | 框架专项 |
 
 ## 测试
 
-| Agent | 模型 | 用途 |
-|------|------|------|
-| tdd-guide | sonnet | TDD 流程指导 |
-| e2e-runner | sonnet | E2E 测试执行 |
+| Agent | 用途 |
+|------|------|
+| tdd-guide | TDD 流程指导 |
+| e2e-runner | E2E 测试（Playwright） |
+| pr-test-analyzer | PR 测试质量分析 |
 
 ## 维护与优化
 
-| Agent | 模型 | 用途 |
-|------|------|------|
-| code-simplifier | haiku | 代码简化和清理 |
-| refactor-cleaner | haiku | 死代码检测和删除 |
-| doc-updater | haiku | 文档和 codemap 更新 |
-| comment-analyzer | haiku | 注释质量分析 |
-| harness-optimizer | sonnet | 配置性能优化 |
-| performance-optimizer | sonnet | 运行时性能优化 |
+| Agent | 用途 |
+|------|------|
+| code-simplifier | 代码简化 |
+| refactor-cleaner | 死代码清理 |
+| doc-updater | 文档同步 |
+| performance-optimizer | 性能优化 |
+| silent-failure-hunter | 静默失败检测 |
 
 ## 编排
 
-| Agent | 模型 | 用途 |
-|------|------|------|
-| loop-operator | sonnet | 自主循环监控 |
-| docs-lookup | haiku | 文档快速查询 |
+| Agent | 用途 |
+|------|------|
+| loop-operator | 自主循环监控 |
+| gan-planner/generator/evaluator | GAN 式开发循环 |
 
-## 使用提示
+## 接下来可以学什么
 
-- Agent 由主 AI 自动派发，不需要手动选择
-- ECC 已为每个 agent 预设了推荐模型
-- 简单任务自动派 haiku（快且省），复杂任务派 sonnet/opus
+- [核心工作流](core-workflow) → plan→tdd→review→build
+- [Skills 精选](skills-index) → 24 个最常用 skill
