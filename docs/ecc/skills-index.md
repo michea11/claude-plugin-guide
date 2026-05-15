@@ -85,42 +85,42 @@ DELETE /api/users/42
 
 ## 语言与框架（8）
 
-### 9. [python-patterns](skills/python-patterns)
+### 9. **python-patterns**
 > *PEP 8 standards, type hints, and best practices for building robust Python applications*
 
 写、审查、重构 Python 代码时激活。
 
-### 10. [golang-patterns](skills/golang-patterns)
+### 10. **golang-patterns**
 > *Idiomatic Go patterns, concurrency, error handling, and best practices*
 
 写、审查、重构 Go 代码时激活。强调简洁、并发安全、错误传播。
 
-### 11. [rust-patterns](skills/rust-patterns)
+### 11. **rust-patterns**
 > *Idiomatic Rust patterns, ownership, error handling, traits, and concurrency*
 
 写、审查、重构 Rust 代码时激活。强调所有权、enum 模式匹配、零成本抽象。
 
-### 12. [django-patterns](skills/django-patterns)
+### 12. **django-patterns**
 > *Django architecture patterns, REST API design with DRF, ORM best practices*
 
 构建 Django 应用、设计 DRF API、设置项目结构时激活。
 
-### 13. [springboot-patterns](skills/springboot-patterns)
+### 13. **springboot-patterns**
 > *Spring Boot architecture patterns, REST API design, layered services, JPA*
 
 构建 Spring Boot REST API、设计 controller → service → repository 层时激活。
 
-### 14. [fastapi-patterns](skills/fastapi-patterns)
+### 14. **fastapi-patterns**
 > *FastAPI patterns for async APIs, dependency injection, Pydantic models, OpenAPI docs*
 
 构建 FastAPI 服务、拆分 routers/schemas/dependencies 时激活。
 
-### 15. [nestjs-patterns](skills/nestjs-patterns)
+### 15. **nestjs-patterns**
 > *NestJS architecture patterns for modules, controllers, providers, DTO validation*
 
 构建 NestJS API、设计 module 结构、添加 guards/interceptors 时激活。
 
-### 16. [swiftui-patterns](skills/swiftui-patterns)
+### 16. **swiftui-patterns**
 > *SwiftUI architecture, @Observable state management, view composition, navigation*
 
 构建 SwiftUI 视图、管理状态（@State/@Observable）、设计 NavigationStack 导航时激活。
@@ -188,7 +188,7 @@ COPY --from=builder /app/dist /app
 
 **检查范围**：SQL 注入、XSS、CSRF、密钥硬编码、加密算法。
 
-### 23. [security-bounty-hunter](skills/security-bounty-hunter)
+### 23. **security-bounty-hunter**
 > *Hunt for exploitable, bounty-worthy security issues in repositories*
 
 安全审计模式下全仓库扫描，检测可利用漏洞。
