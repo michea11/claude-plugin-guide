@@ -9,9 +9,9 @@
 | 需求澄清 | brainstorming（苏格拉底式提问） | `/plan`（技术可行性分析） |
 | 方案设计 | brainstorming → spec 文档 | architect agent（架构审阅） |
 | 任务拆解 | writing-plans（2-5 分钟粒度） | — |
-| 编码执行 | subagent-driven-development | `/tdd` + `/code-review` |
-| 构建修复 | — | `/build-fix`（语言专用构建修复） |
-| 质量保障 | verification-before-completion | `/verify` + `/security-scan` |
+| 编码执行 | subagent-driven-development | `ecc:tdd-workflow` + `/code-review` |
+| 构建修复 | — | `/build-fix` 命令（语言专用构建修复） |
+| 质量保障 | verification-before-completion | `ecc:quality-gate` + `/security-scan` |
 | 审查合并 | requesting-code-review | code-reviewer agent |
 | 发布收尾 | finishing-a-development-branch | CI/CD 工作流 |
 
@@ -108,17 +108,17 @@ Superpowers `writing-plans` 把 `/plan` 的输出拆成 2-5 分钟粒度的独�
 
 ---
 
-### 阶段 3：编码执行 — ECC `/tdd` + `/code-review`
+### 阶段 3：编码执行 — ecc:tdd-workflow + /code-review
 
 这是 ECC 发挥核心价值的阶段。每个任务都走 `RED → GREEN → REFACTOR → REVIEW` 循环。
 
 **任务 1-2：定义类型 + 写测试（RED）**
 
-`/tdd` 命令启动 tdd-guide agent，强制测试先行：
+通过 `ecc:tdd-workflow` skill 启动 TDD 流程，tdd-guide agent 强制测试先行：
 
-```bash
-/tdd 按计划实现 CommandTable 组件，先写测试
 ```
+用户直接描述需求即可自动触发 TDD 流程：
+"用 TDD 方式实现 CommandTable 组件，先写测试"
 
 ```typescript
 // src/components/CommandTable/types.ts
@@ -378,7 +378,7 @@ Superpowers `verification-before-completion` 做最终检查：
 
 ```bash
 # 补充文档后，再次验证
-/verify
+npm run build && npm test
 # VERIFICATION: PASS ✅
 ```
 
@@ -388,13 +388,13 @@ Superpowers `verification-before-completion` 做最终检查：
 
 回顾整个流程，ECC 在以下环节直接参与执行：
 
-| 步骤 | ECC 命令 | 具体做了什么 |
+| 步骤 | ECC 工具 | 具体做了什么 |
 |------|---------|------------|
-| 技术分析 | `/plan` | planner agent 评估可行性 + 识别 SSR 风险 |
-| 测试驱动 | `/tdd` | tdd-guide agent 强制执行 RED→GREEN→REFACTOR |
-| 代码审查 | `/code-review` | code-reviewer 发现组件耦合和内联样式问题 |
-| 构建修复 | `/build-fix` | build-error-resolver 诊断并修复导入路径错误 |
-| 全面验证 | `/verify` | 构建 + 类型 + 测试 + 覆盖率的全量检查 |
+| 技术分析 | `/plan` 命令 | planner agent 评估可行性 + 识别 SSR 风险 |
+| 测试驱动 | `ecc:tdd-workflow` skill | tdd-guide agent 强制执行 RED→GREEN→REFACTOR |
+| 代码审查 | `/code-review` 命令 | code-reviewer 发现组件耦合和内联样式问题 |
+| 构建修复 | `/build-fix` 命令 | build-error-resolver 诊断并修复导入路径错误 |
+| 全面验证 | `ecc:quality-gate` skill | 构建 + 类型 + 测试 + 覆盖率的全量检查 |
 
 Superpowers 负责**编排**这些 ECC 命令的调用时机，ECC 负责**执行**每个命令的具体工作。
 
@@ -409,17 +409,17 @@ Superpowers 负责**编排**这些 ECC 命令的调用时机，ECC 负责**执�
 ✅ 正确：brainstorming 产出 spec → /plan 基于 spec 评估可行性
 ```
 
-### 2. /tdd 不做架构决策，brainstorming 不写代码
+### 2. ecc:tdd-workflow 不做架构决策，brainstorming 不写代码
 
 ```
 brainstorming → writing-plans：回答"做什么、怎么做"
-/plan → /tdd → /code-review：回答"用什么技术、写什么代码"
+/plan → ecc:tdd-workflow → /code-review：回答"用什么技术、写什么代码"
 ```
 
 ### 3. 改一点验证一点
 
 ```
-/tdd 修改代码 → /code-review 审查 → /build-fix（如有问题）→ /verify 验证
+ecc:tdd-workflow 写代码 → /code-review 审查 → /build-fix（如有问题）→ ecc:quality-gate 验证
 ```
 
 不是"全部做完再检查"，而是每步都验证。
@@ -440,12 +440,12 @@ brainstorming → writing-plans：回答"做什么、怎么做"
 
 | 你要做什么 | 启动方式 | 说明 |
 |-----------|---------|------|
-| 新功能从零开始 | `brainstorming` → `/plan` → `/tdd` | 全流程 |
-| 修复 Bug | `/tdd` + `systematic-debugging` | 先写复现测试 |
+| 新功能从零开始 | `brainstorming` → `/plan` → `ecc:tdd-workflow` | 全流程 |
+| 修复 Bug | `systematic-debugging` + `ecc:tdd-workflow` | 先写复现测试 |
 | 代码审查 | `/code-review` | 自动审查 |
 | 构建报错 | `/build-fix` | 自动诊断修复 |
 | 安全审计 | `/security-scan` | AgentShield 扫描 |
-| 开源发布 | `brainstorming` + `/verify` | 防密钥泄露 |
+| 质量验证 | `ecc:quality-gate` | 构建+测试+覆盖率全量检查 |
 | 重构优化 | `brainstorming` → `/refactor-clean` | 先设计再动手 |
 
 ---
@@ -455,4 +455,4 @@ brainstorming → writing-plans：回答"做什么、怎么做"
 - [Superpowers 核心流程链](workflow-chain) — 理解 15 个 skill 的完整编排
 - [ECC 核心工作流](../ecc/core-workflow) — plan → tdd → review → build 详解
 - [ECC 实战示例](../ecc/examples) — 代码级开发案例
-- [/tdd 详解](../ecc/skills/tdd-workflow) — TDD 工作流的每个步骤
+- [ecc:tdd-workflow 详解](../ecc/skills/tdd-workflow) — TDD 工作流的每个步骤
