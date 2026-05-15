@@ -8,6 +8,90 @@ ECC 有 228 个 skill，AI 根据场景自动触发。以下精选 24 个最常�
 
 ---
 
+## 如何使用 ECC 的 Skill？
+
+Skill 和 Command 不同——**你无法手动调用 skill**。Skill 由 AI 自动判断触发。
+
+### 触发原理
+
+AI 在每次对话时会检查所有 skill 的 `description` 字段。当你的对话内容匹配某个 skill 的描述时，AI 自动加载这个 skill。
+
+```yaml
+# 这是 tdd-workflow 的 description
+description: |
+  Use when writing new features, fixing bugs, or refactoring code.
+  Enforces test-driven development with 80%+ coverage.
+```
+
+当你开始写新功能、修 bug、或重构代码时 → AI 看到匹配 → 自动加载 tdd-workflow → 强制走 RED→GREEN→REFACTOR
+
+### 怎么用？正常说话就行
+
+**你不需要说"请加载 tdd-workflow skill"**。你只需要：
+
+```
+帮我用 TDD 方式实现一个用户认证功能
+```
+
+AI 看到"TDD"、"实现功能"等关键词，匹配到 tdd-workflow，自动介入。
+
+| 你想触发 | 怎么说（示例） |
+|---------|------|
+| tdd-workflow | "帮我实现一个登录功能，先写测试" |
+| coding-standards | "审查一下这段代码的质量" |
+| security-review | "检查这个接口有没有安全问题" |
+| api-design | "给我设计一个用户管理 API" |
+| postgres-patterns | "给这个表加个索引，现在查询很慢" |
+| error-handling | "这个第三方 API 经常超时，怎么加重试" |
+| docker-patterns | "帮我把这个项目容器化" |
+| git-workflow | "这次改动应该怎么拆分 commit" |
+| search-first | "我需要一个日期处理库" |
+| hexagonal-architecture | "怎么把这个模块和数据库解耦" |
+
+### 验证 skill 是否被触发
+
+Skill 触发后，AI 的行为会改变。比如：
+- tdd-workflow 触发 → AI 会先写测试，且会运行确认失败
+- security-review 触发 → AI 审查时会列出安全 checklist
+- coding-standards 触发 → AI 会把命名规范等规则应用到你写的代码
+
+### 查看已安装的 Skill
+
+```bash
+# 查看 ECC 安装的 skill
+ls ~/.claude/plugins/cache/ecc/ecc/*/skills/
+
+# 查看 Superpowers 的 skill
+ls ~/.claude/plugins/cache/claude-plugins-official/superpowers/*/skills/
+```
+
+### 什么时候不生效？
+
+:::warning[常见原因]
+1. **你的描述不够具体** → 没有触发关键词匹配
+2. **项目缺少配置文件** → 部分 skill 需要特定框架/语言环境
+3. **skill 有 bug** → description 写了但行为定义有误
+4. **和其他 skill 冲突** → 多个 skill 争夺触发权
+:::
+
+### 与 Command 的区别
+
+| | Skill | Command |
+|------|------|------|
+| 怎么用 | 正常说话，AI 自动触发 | 输入 `/命令` |
+| 什么时候 | AI 判断场景匹配 | 你决定时机 |
+| 能控制吗 | 不能手动调用 | 完全由你控制 |
+| 例子 | tdd-workflow, security-review | /plan, /build-fix |
+
+:::tip[记住]
+Skill = AI 自动做的。Command = 你让 AI 做的。
+
+所以"怎么用 ECC 的 skill？"这个问题的答案是：**你不需要单独用某个 skill——你做你的开发，skill 在需要的时刻自动出现。**
+:::
+
+
+---
+
 ## 通用开发（4）
 
 ### 1. [coding-standards](skills/coding-standards)
