@@ -4,28 +4,31 @@ sidebar_position: 3
 
 # 第一个插件：开启 ECC
 
-ECC (Everything Claude Code) 是功能最全面的 Claude Code 插件集合。安装后你会获得 60+ 专业 agent、228 个场景化 skill 和 75 个快捷命令。
+ECC 安装后的第一次体验——从安装到跑通核心工作流。
 
 ## 安装
 
 ```bash
-# 1. 注册 ECC 市场
 /plugin marketplace add affaan-m/everything-claude-code
-
-# 2. 安装 ECC
 /plugin install ecc@ecc
-
-# 3. 验证安装
-/plugin list
 ```
 
-## 验证安装成功
+安装后输入 `/plugin list` 确认 ECC 在列表中。
 
-安装后，在对话中试输入 `/help`，你应该能看到新增的命令列表。
+## 验证：看看多了什么
+
+```bash
+# 查看命令列表
+/help
+```
+
+你应该看到 75 个新命令：`/plan`、`/tdd`、`/code-review`、`/build-fix` 等。
+
+:::tip[不止是命令]
+ECC 的 228 个 skill 和 60+ agent **不会出现在命令列表中**——它们由 AI 自动判断触发。你只需要正常对话，它们会在正确时机自动介入。
+:::
 
 ## 第一次体验核心流程
-
-ECC 的核心工作流：**plan → tdd → code-review → build-fix**
 
 ### 1. 做一次规划
 
@@ -33,15 +36,37 @@ ECC 的核心工作流：**plan → tdd → code-review → build-fix**
 /plan 我想给项目加一个用户登出按钮
 ```
 
-ECC 的 planner agent 会分析需求，生成包含架构、文件和接口的实现计划。
+Planner agent 会分析你的项目，输出包含文件清单和实现步骤的计划。
 
-### 2. 启动 TDD 流程
+### 2. 体验 TDD
 
 ```
 /tdd auth.logout
 ```
 
-TDD guide agent 强制先写失败的测试，再写最小实现，最后重构。
+三步循环的具体表现：
+
+```javascript
+// AI 先生成测试（你看到了吗？这就是 RED）
+describe('logout', () => {
+  it('should clear session', () => {
+    logout();
+    expect(getSession()).toBeNull();
+  });
+});
+
+// 然后写实现 —— GREEN
+function logout() {
+  clearSession();
+}
+
+// 最后优化 —— REFACTOR
+function logout() {
+  invalidateToken();
+  clearSession();
+  redirectTo('/login');
+}
+```
 
 ### 3. 代码审查
 
@@ -49,33 +74,34 @@ TDD guide agent 强制先写失败的测试，再写最小实现，最后重构�
 /code-review
 ```
 
-Code reviewer agent 审查最近的代码变更，检查质量、安全和可维护性。
+Code reviewer agent 审查最近的变更，输出一份包含质量、安全、模式一致性的报告。
 
 ### 4. 修复构建
 
-如果构建报错：
+如果构建出错：
 
 ```
 /build-fix
 ```
 
-Build error resolver agent 分析并逐个修复错误。
+:::warning[注意]
+第一次用时，给每个命令 1-2 分钟运行时间。Agent 需要分析代码库，第一次可能稍慢。
+:::
 
-## 推荐配置
+## 推荐阅读顺序
 
-在项目根目录创建 `.claude/settings.local.json`：
+| 顺序 | 内容 | 预计时间 |
+|------|------|------|
+| 1 | [ECC 总览](../ecc/overview) | 5 分钟 |
+| 2 | [核心工作流](../ecc/core-workflow) | 10 分钟 |
+| 3 | [Skills 精选](../ecc/skills-index) | 15 分钟 |
+| 4 | [Commands 速查](../ecc/commands-reference) | 10 分钟 |
+| 5 | [实战示例](../ecc/examples) | 10 分钟 |
 
-```json
-{
-  "model": "sonnet",
-  "enabledPlugins": {
-    "ecc@ecc": true
-  }
-}
-```
+按这个顺序，约 1 小时可以掌握 ECC 的核心用法。
 
-确保 ECC 在项目中始终启用。
+## 接下来可以学什么
 
-## 更多探索
-
-ECC 的 228 个 skill 覆盖几乎所有开发场景。接下来了解[插件核心概念](../concepts/plugin-anatomy)，或直接跳到 [ECC 插件详解](../ecc/overview)。
+- [ECC 插件总览](../ecc/overview) → 了解六大模块
+- [Superpowers 总览](../superpowers/overview) → 搭配使用效果更好
+- [插件核心概念](../concepts/plugin-anatomy) → 理解底层机制
