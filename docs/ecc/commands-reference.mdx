@@ -1,0 +1,156 @@
+---
+sidebar_position: 4
+---
+
+import CommandTable from '@site/src/components/CommandTable';
+
+# ECC Commands 速查
+
+ECC 提供 75 个 slash 命令，涵盖从规划到部署的全流程。下方表格支持**搜索**和**按分类筛选**。
+
+export const commands = [
+  { name: '/plan', category: 'Core Workflow', description: '需求分析和实现规划' },
+  { name: '/tdd', category: 'Core Workflow', description: '测试驱动开发流程：RED → GREEN → REFACTOR' },
+  { name: '/code-review', category: 'Core Workflow', description: '代码质量、安全和可维护性审查' },
+  { name: '/build-fix', category: 'Core Workflow', description: '分析并修复构建错误' },
+  { name: '/verify', category: 'Core Workflow', description: '验证实现正确性' },
+  { name: '/quality-gate', category: 'Core Workflow', description: '运行质量门禁检查' },
+  { name: '/e2e', category: 'Testing', description: '端到端测试（Playwright）' },
+  { name: '/test-coverage', category: 'Testing', description: '分析测试覆盖率缺口' },
+  { name: '/go-test', category: 'Testing', description: 'Go TDD 测试' },
+  { name: '/kotlin-test', category: 'Testing', description: 'Kotlin TDD 测试' },
+  { name: '/rust-test', category: 'Testing', description: 'Rust TDD 测试' },
+  { name: '/cpp-test', category: 'Testing', description: 'C++ TDD 测试' },
+  { name: '/flutter-test', category: 'Testing', description: 'Flutter/Dart 测试' },
+  { name: '/python-review', category: 'Code Review', description: 'Python 专项审查' },
+  { name: '/go-review', category: 'Code Review', description: 'Go 专项审查' },
+  { name: '/kotlin-review', category: 'Code Review', description: 'Kotlin 专项审查' },
+  { name: '/rust-review', category: 'Code Review', description: 'Rust 专项审查' },
+  { name: '/cpp-review', category: 'Code Review', description: 'C++ 专项审查' },
+  { name: '/go-build', category: 'Build Fixers', description: 'Go 构建修复' },
+  { name: '/kotlin-build', category: 'Build Fixers', description: 'Kotlin 构建修复' },
+  { name: '/rust-build', category: 'Build Fixers', description: 'Rust 构建修复' },
+  { name: '/cpp-build', category: 'Build Fixers', description: 'C++ 构建修复' },
+  { name: '/gradle-build', category: 'Build Fixers', description: 'Gradle 构建修复' },
+  { name: '/flutter-build', category: 'Build Fixers', description: 'Flutter 构建修复' },
+  { name: '/multi-plan', category: 'Planning', description: '多 agent 并行规划' },
+  { name: '/multi-workflow', category: 'Planning', description: '多 agent 并行开发工作流' },
+  { name: '/multi-backend', category: 'Planning', description: '后端专项多 agent 工作流' },
+  { name: '/multi-frontend', category: 'Planning', description: '前端专项多 agent 工作流' },
+  { name: '/multi-execute', category: 'Planning', description: '多 agent 并行执行' },
+  { name: '/plan-orchestrate', category: 'Planning', description: '编排执行计划' },
+  { name: '/prp-plan', category: 'Planning', description: 'PRP 方式规划' },
+  { name: '/prp-implement', category: 'Planning', description: 'PRP 方式实现' },
+  { name: '/save-session', category: 'Session', description: '保存当前会话状态' },
+  { name: '/resume-session', category: 'Session', description: '恢复之前的会话' },
+  { name: '/sessions', category: 'Session', description: '管理会话历史列表' },
+  { name: '/checkpoint', category: 'Session', description: '创建恢复检查点' },
+  { name: '/aside', category: 'Session', description: '快速旁路提问' },
+  { name: '/context-budget', category: 'Session', description: '审计上下文窗口使用' },
+  { name: '/learn', category: 'Learning', description: '从当前会话提取编码模式' },
+  { name: '/learn-eval', category: 'Learning', description: '评估学习质量' },
+  { name: '/evolve', category: 'Learning', description: '将模式进化为 skill' },
+  { name: '/promote', category: 'Learning', description: '将项目 scope 提升为全局' },
+  { name: '/instinct-status', category: 'Learning', description: '查看学习到的本能' },
+  { name: '/instinct-export', category: 'Learning', description: '导出本能到文件' },
+  { name: '/instinct-import', category: 'Learning', description: '从文件导入本能' },
+  { name: '/skill-create', category: 'Learning', description: '从 git 历史创建 skill' },
+  { name: '/skill-health', category: 'Learning', description: 'Skill 健康仪表盘' },
+  { name: '/refactor-clean', category: 'Refactoring', description: '安全清理死代码' },
+  { name: '/prompt-optimize', category: 'Refactoring', description: '优化 prompt 质量' },
+  { name: '/docs', category: 'Docs', description: '查询库/框架文档（Context7）' },
+  { name: '/update-docs', category: 'Docs', description: '同步项目文档' },
+  { name: '/update-codemaps', category: 'Docs', description: '生成架构 codemap' },
+  { name: '/loop-start', category: 'Automation', description: '启动自主循环' },
+  { name: '/loop-status', category: 'Automation', description: '查看循环状态' },
+  { name: '/pm2', category: 'Automation', description: 'PM2 进程管理' },
+  { name: '/projects', category: 'Infrastructure', description: '列出已知项目' },
+  { name: '/harness-audit', category: 'Infrastructure', description: '审查 harness 配置' },
+  { name: '/eval', category: 'Infrastructure', description: '运行评估 harness' },
+  { name: '/model-route', category: 'Infrastructure', description: '推荐最佳模型' },
+  { name: '/project-init', category: 'Infrastructure', description: '初始化新项目 ECC' },
+];
+
+<CommandTable commands={commands} />
+
+---
+
+## 核心工作流命令详解
+
+### /plan — 需求规划
+
+规划是一切的第一步。输入自然语言需求，planner agent 输出结构化实现计划。
+
+```bash
+/plan 给博客添加全文搜索功能，支持标题和内容搜索，分页显示结果
+```
+
+Planner 会分析现有代码，输出包含文件清单、接口设计、实现步骤的计划。
+
+:::tip[实战建议]
+需求复杂时用 `/multi-plan` 派多个 agent 并行规划，效率更高。
+:::
+
+### /tdd — 测试驱动开发
+
+强制 TDD 流程：**RED → GREEN → REFACTOR**。
+
+```bash
+/tdd search.service
+```
+
+1. **RED**：生成失败的测试用例
+2. **GREEN**：生成刚好通过的最小实现
+3. **REFACTOR**：在测试保护下优化代码
+
+:::warning[注意]
+tdd-guide agent 会在实现前检查测试是否真的失败。跳过测试直接写实现会被拦截。
+:::
+
+### /code-review — 代码审查
+
+审查最近变更。也可以指定语言专用审查：
+
+```bash
+# 通用审查
+/code-review
+
+# 语言专用
+/python-review
+/go-review
+/kotlin-review
+```
+
+Code reviewer 检查：代码质量、安全隐患、边界条件、是否遵循项目模式。
+
+### /build-fix — 构建修复
+
+```bash
+/build-fix
+```
+
+Build error resolver 分析错误日志，以**最小 diff** 逐个修复。语言专用：
+
+```bash
+/go-build       # Go 构建
+/rust-build     # Rust 构建
+/cpp-build      # C++ 构建
+/kotlin-build   # Kotlin/Gradle
+```
+
+---
+
+## 常用场景组合
+
+| 场景 | 命令序列 |
+|------|---------|
+| 新功能开发 | `/plan` → `/tdd` → `/code-review` |
+| Bug 修复 | `/tdd` → `/code-review` → `/build-fix` |
+| 安全审计 | `/security-scan` |
+| 多模块并行 | `/multi-workflow` |
+| 重构清理 | `/refactor-clean` |
+| 学习归档 | `/learn` → `/learn-eval` → `/evolve` |
+
+:::info[更多命令]
+完整命令列表在 ECC 插件目录 `commands/` 下。每个命令的 `.md` 文件包含了完整的行为定义。
+:::

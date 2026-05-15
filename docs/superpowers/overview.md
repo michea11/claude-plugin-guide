@@ -2,56 +2,50 @@
 
 Superpowers 是一套**开发方法论插件**，由 Jesse Vincent 创建，GitHub 137K+ Stars，安装量超 23 万。
 
-## 核心理念
+:::tip[一句话总结]
+Superpowers 不是让 AI "更聪明"，而是给它装上**工程纪律**。把资深工程师的工作流程编码为 15 个可组合的 Skill。
+:::
 
-Superpowers 不是让 AI "更聪明"，而是给它装上**工程纪律**。把资深工程师的工作流程编码为 15 个可组合的 Skill，强制执行结构化开发流程。
+## 社区验证效果
+
+| 指标 | 数据 |
+|------|------|
+| 返工减少 | 70-90% |
+| 测试覆盖率 | 85-95%（TDD 强制） |
+| 多任务提速 | 3-4 倍 |
+| 核心理念 | "慢即是快" — 一次做对省过反复返工 |
 
 ## 15 个 Skill 全景
 
-| 阶段 | Skill | 作用 |
+| 阶段 | Skill | 一句话 |
 |------|------|------|
-| 规划 | brainstorming | 需求讨论，产出设计文档 |
-| 规划 | writing-plans | 将设计拆解为微小任务 |
-| 执行 | executing-plans | 按计划逐步实现 |
-| 执行 | subagent-driven-development | 每任务派新子 agent |
-| 执行 | test-driven-development | 强制 RED→GREEN→REFACTOR |
-| 执行 | systematic-debugging | 系统化调试方法 |
-| 执行 | using-git-worktrees | Git worktree 环境隔离 |
-| 执行 | dispatching-parallel-agents | 并行派发独立任务 |
-| 质检 | verification-before-completion | 完成前验证 |
-| 质检 | requesting-code-review | 请求代码审查 |
-| 质检 | receiving-code-review | 处理审查反馈 |
-| 质检 | finishing-a-development-branch | 完成开发分支 |
-| 工具 | writing-skills | 创建/编辑 skill |
-| 工具 | using-superpowers | 元 skill |
-| 工具 | using-git-worktrees | Worktree 管理 |
+| 🧠 规划 | brainstorming | 不设计不写代码 |
+| 🧠 规划 | writing-plans | 拆解为 2-5 分钟任务 |
+| ⚙️ 执行 | subagent-driven-development | 每任务新 agent |
+| ⚙️ 执行 | test-driven-development | RED→GREEN→REFACTOR |
+| ⚙️ 执行 | systematic-debugging | 复现→定位→修复→验证 |
+| ⚙️ 执行 | executing-plans | 独立 session 执行 |
+| ⚙️ 执行 | using-git-worktrees | 环境隔离 |
+| ⚙️ 执行 | dispatching-parallel-agents | 并行派发 |
+| ✅ 质检 | verification-before-completion | 不验证不提交 |
+| ✅ 质检 | requesting-code-review | 请求审查 |
+| ✅ 质检 | receiving-code-review | 处理反馈 |
+| ✅ 质检 | finishing-a-development-branch | 合并/PR/保留/丢弃 |
+| 🔧 工具 | writing-skills | 创建和编辑 skill |
+| 🔧 工具 | using-superpowers | 元 skill |
+| 🔧 工具 | using-git-worktrees | 补充 worktree |
 
 ## 四步强制工作流
 
 ```
 Brainstorming → Writing Plans → Execute → Verify → Finish
-     ↑                                              |
-     └──────── 如有问题，回到设计 ←─────────────────┘
 ```
 
-### 1. Brainstorming
-硬关卡：不完成设计文档，绝不动手写代码。苏格拉底式提问，一次一个问题。
-
-### 2. Writing Plans
-将设计拆为 2-5 分钟可完成的任务。精确到文件路径、命令、完整代码。
-
-### 3. Execute
-每个任务派新子 agent，TDD 强制，两轮审查（规格 + 质量）。
-
-### 4. Verify & Finish
-全量测试、文档更新、合并或 PR。
-
-## 社区效果数据
-
-- 返工减少 70-90%
-- 测试覆盖率 85-95%
-- 多任务并行提速 3-4 倍
-- "慢即是快"：90 分钟一次做对 vs 30 分钟 + 返工 3 次
+:::warning[硬关卡]
+- brainstorming：不写设计文档 **禁止** 写代码
+- test-driven-development：测试不先失败 **禁止** 写实现
+- verification-before-completion：验证不通过 **禁止** 声称完成
+:::
 
 ## 安装
 
@@ -61,4 +55,4 @@ Brainstorming → Writing Plans → Execute → Verify → Finish
 
 ## 下一步
 
-了解[核心流程链](workflow-chain)，然后逐一学习各个 Skill。
+了解[核心流程链](workflow-chain) → [各 Skill 详解](skills/using-superpowers)。
