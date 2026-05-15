@@ -6,151 +6,270 @@ import CommandTable from '@site/src/components/CommandTable';
 
 # ECC Commands 速查
 
-ECC 提供 75 个 slash 命令，涵盖从规划到部署的全流程。下方表格支持**搜索**和**按分类筛选**。
+75 个 slash 命令，覆盖从规划到部署的全流程。表格支持**搜索**和**分类筛选**。
 
 export const commands = [
-  { name: '/plan', category: 'Core Workflow', description: '需求分析和实现规划' },
-  { name: '/tdd', category: 'Core Workflow', description: '测试驱动开发流程：RED → GREEN → REFACTOR' },
+  { name: '/plan', category: 'Core Workflow', description: '需求分析和实现规划，Planner agent 输出结构化计划' },
+  { name: '/tdd', category: 'Core Workflow', description: 'TDD 流程：RED → GREEN → REFACTOR，tdd-guide agent 强制执行' },
   { name: '/code-review', category: 'Core Workflow', description: '代码质量、安全和可维护性审查' },
-  { name: '/build-fix', category: 'Core Workflow', description: '分析并修复构建错误' },
-  { name: '/verify', category: 'Core Workflow', description: '验证实现正确性' },
-  { name: '/quality-gate', category: 'Core Workflow', description: '运行质量门禁检查' },
-  { name: '/e2e', category: 'Testing', description: '端到端测试（Playwright）' },
-  { name: '/test-coverage', category: 'Testing', description: '分析测试覆盖率缺口' },
-  { name: '/go-test', category: 'Testing', description: 'Go TDD 测试' },
-  { name: '/kotlin-test', category: 'Testing', description: 'Kotlin TDD 测试' },
-  { name: '/rust-test', category: 'Testing', description: 'Rust TDD 测试' },
-  { name: '/cpp-test', category: 'Testing', description: 'C++ TDD 测试' },
+  { name: '/build-fix', category: 'Core Workflow', description: '分析构建日志，最小 diff 修复错误' },
+  { name: '/verify', category: 'Core Workflow', description: '验证实现正确性和完整性' },
+  { name: '/quality-gate', category: 'Core Workflow', description: '运行质量门禁检查，确保代码符合标准' },
+  { name: '/e2e', category: 'Testing', description: 'Playwright 端到端测试' },
+  { name: '/test-coverage', category: 'Testing', description: '分析测试覆盖率缺口并生成补充测试' },
+  { name: '/go-test', category: 'Testing', description: 'Go 语言 TDD 测试' },
+  { name: '/kotlin-test', category: 'Testing', description: 'Kotlin 语言 TDD 测试' },
+  { name: '/rust-test', category: 'Testing', description: 'Rust 语言 TDD 测试' },
+  { name: '/cpp-test', category: 'Testing', description: 'C++ 语言 TDD 测试' },
   { name: '/flutter-test', category: 'Testing', description: 'Flutter/Dart 测试' },
-  { name: '/python-review', category: 'Code Review', description: 'Python 专项审查' },
-  { name: '/go-review', category: 'Code Review', description: 'Go 专项审查' },
-  { name: '/kotlin-review', category: 'Code Review', description: 'Kotlin 专项审查' },
-  { name: '/rust-review', category: 'Code Review', description: 'Rust 专项审查' },
-  { name: '/cpp-review', category: 'Code Review', description: 'C++ 专项审查' },
-  { name: '/go-build', category: 'Build Fixers', description: 'Go 构建修复' },
-  { name: '/kotlin-build', category: 'Build Fixers', description: 'Kotlin 构建修复' },
-  { name: '/rust-build', category: 'Build Fixers', description: 'Rust 构建修复' },
-  { name: '/cpp-build', category: 'Build Fixers', description: 'C++ 构建修复' },
-  { name: '/gradle-build', category: 'Build Fixers', description: 'Gradle 构建修复' },
-  { name: '/flutter-build', category: 'Build Fixers', description: 'Flutter 构建修复' },
-  { name: '/multi-plan', category: 'Planning', description: '多 agent 并行规划' },
-  { name: '/multi-workflow', category: 'Planning', description: '多 agent 并行开发工作流' },
+  { name: '/python-review', category: 'Code Review', description: 'Python 专项审查 (PEP 8, type hints, security)' },
+  { name: '/go-review', category: 'Code Review', description: 'Go 专项审查 (idioms, concurrency, errors)' },
+  { name: '/kotlin-review', category: 'Code Review', description: 'Kotlin 专项审查 (null safety, coroutines)' },
+  { name: '/rust-review', category: 'Code Review', description: 'Rust 专项审查 (ownership, lifetimes, unsafe)' },
+  { name: '/cpp-review', category: 'Code Review', description: 'C++ 专项审查 (memory, modern idioms, concurrency)' },
+  { name: '/go-build', category: 'Build Fixers', description: 'Go 构建修复 (go build / go vet)' },
+  { name: '/kotlin-build', category: 'Build Fixers', description: 'Kotlin/Gradle 构建修复' },
+  { name: '/rust-build', category: 'Build Fixers', description: 'Rust 构建修复 (cargo build / cargo check)' },
+  { name: '/cpp-build', category: 'Build Fixers', description: 'C++ 构建修复 (cmake / make)' },
+  { name: '/gradle-build', category: 'Build Fixers', description: 'Gradle 构建修复 (Android / KMP)' },
+  { name: '/flutter-build', category: 'Build Fixers', description: 'Flutter/Dart 构建修复' },
+  { name: '/multi-plan', category: 'Planning', description: '多 agent 并行规划，独立分析后合并方案' },
+  { name: '/multi-workflow', category: 'Planning', description: '多 agent 并行开发，同时推进多个模块' },
   { name: '/multi-backend', category: 'Planning', description: '后端专项多 agent 工作流' },
   { name: '/multi-frontend', category: 'Planning', description: '前端专项多 agent 工作流' },
-  { name: '/multi-execute', category: 'Planning', description: '多 agent 并行执行' },
-  { name: '/plan-orchestrate', category: 'Planning', description: '编排执行计划' },
-  { name: '/prp-plan', category: 'Planning', description: 'PRP 方式规划' },
-  { name: '/prp-implement', category: 'Planning', description: 'PRP 方式实现' },
-  { name: '/save-session', category: 'Session', description: '保存当前会话状态' },
-  { name: '/resume-session', category: 'Session', description: '恢复之前的会话' },
-  { name: '/sessions', category: 'Session', description: '管理会话历史列表' },
-  { name: '/checkpoint', category: 'Session', description: '创建恢复检查点' },
-  { name: '/aside', category: 'Session', description: '快速旁路提问' },
-  { name: '/context-budget', category: 'Session', description: '审计上下文窗口使用' },
-  { name: '/learn', category: 'Learning', description: '从当前会话提取编码模式' },
-  { name: '/learn-eval', category: 'Learning', description: '评估学习质量' },
-  { name: '/evolve', category: 'Learning', description: '将模式进化为 skill' },
-  { name: '/promote', category: 'Learning', description: '将项目 scope 提升为全局' },
-  { name: '/instinct-status', category: 'Learning', description: '查看学习到的本能' },
-  { name: '/instinct-export', category: 'Learning', description: '导出本能到文件' },
-  { name: '/instinct-import', category: 'Learning', description: '从文件导入本能' },
-  { name: '/skill-create', category: 'Learning', description: '从 git 历史创建 skill' },
-  { name: '/skill-health', category: 'Learning', description: 'Skill 健康仪表盘' },
-  { name: '/refactor-clean', category: 'Refactoring', description: '安全清理死代码' },
-  { name: '/prompt-optimize', category: 'Refactoring', description: '优化 prompt 质量' },
-  { name: '/docs', category: 'Docs', description: '查询库/框架文档（Context7）' },
-  { name: '/update-docs', category: 'Docs', description: '同步项目文档' },
-  { name: '/update-codemaps', category: 'Docs', description: '生成架构 codemap' },
-  { name: '/loop-start', category: 'Automation', description: '启动自主循环' },
-  { name: '/loop-status', category: 'Automation', description: '查看循环状态' },
-  { name: '/pm2', category: 'Automation', description: 'PM2 进程管理' },
-  { name: '/projects', category: 'Infrastructure', description: '列出已知项目' },
-  { name: '/harness-audit', category: 'Infrastructure', description: '审查 harness 配置' },
-  { name: '/eval', category: 'Infrastructure', description: '运行评估 harness' },
-  { name: '/model-route', category: 'Infrastructure', description: '推荐最佳模型' },
-  { name: '/project-init', category: 'Infrastructure', description: '初始化新项目 ECC' },
+  { name: '/multi-execute', category: 'Planning', description: '多 agent 并行执行计划' },
+  { name: '/plan-orchestrate', category: 'Planning', description: '读取计划文档，拆解步骤，编排 agent 链' },
+  { name: '/prp-plan', category: 'Planning', description: 'PRP 方式创建实现计划' },
+  { name: '/prp-implement', category: 'Planning', description: 'PRP 方式执行实现' },
+  { name: '/save-session', category: 'Session', description: '保存当前会话到 ~/.claude/session-data/' },
+  { name: '/resume-session', category: 'Session', description: '从最新存档恢复会话' },
+  { name: '/sessions', category: 'Session', description: '管理会话历史和别名' },
+  { name: '/checkpoint', category: 'Session', description: '创建验证检查点，失败可回溯' },
+  { name: '/aside', category: 'Session', description: '快速旁路提问，不丢失当前任务上下文' },
+  { name: '/context-budget', category: 'Session', description: '审计上下文窗口使用情况' },
+  { name: '/learn', category: 'Learning', description: '从当前会话提取编码模式，保存为 instinct' },
+  { name: '/learn-eval', category: 'Learning', description: '自评学习质量，决定是否保存' },
+  { name: '/evolve', category: 'Learning', description: '分析 instincts，建议进化为 skill 结构' },
+  { name: '/promote', category: 'Learning', description: '将项目 scoped instinct 提升为全局' },
+  { name: '/instinct-status', category: 'Learning', description: '查看已学习的本能及其置信度' },
+  { name: '/instinct-export', category: 'Learning', description: '导出 instincts 到文件' },
+  { name: '/instinct-import', category: 'Learning', description: '从文件导入 instincts' },
+  { name: '/skill-create', category: 'Learning', description: '分析 git 历史，提取编码模式生成 SKILL.md' },
+  { name: '/skill-health', category: 'Learning', description: 'Skill 组合健康仪表盘' },
+  { name: '/refactor-clean', category: 'Refactoring', description: '检测并安全删除死代码' },
+  { name: '/prompt-optimize', category: 'Refactoring', description: '分析并优化 prompt 质量' },
+  { name: '/docs', category: 'Docs', description: '通过 Context7 MCP 查询库/框架最新文档' },
+  { name: '/update-docs', category: 'Docs', description: '从源文件同步文档（scripts, schemas, routes）' },
+  { name: '/update-codemaps', category: 'Docs', description: '扫描项目生成 token-lean 架构 codemap' },
+  { name: '/loop-start', category: 'Automation', description: '启动自主循环模式，设置安全默认值和停止条件' },
+  { name: '/loop-status', category: 'Automation', description: '查看活动循环的状态和推荐干预' },
+  { name: '/pm2', category: 'Automation', description: '检测项目并生成 PM2 服务管理命令' },
+  { name: '/projects', category: 'Infrastructure', description: '列出已知项目及其 instinct 统计' },
+  { name: '/harness-audit', category: 'Infrastructure', description: '运行确定性 harness 审计，返回评分' },
+  { name: '/eval', category: 'Infrastructure', description: '运行评估框架，Eval-Driven Development' },
+  { name: '/model-route', category: 'Infrastructure', description: '基于任务复杂度推荐最佳模型 tier' },
+  { name: '/project-init', category: 'Infrastructure', description: '检测项目栈，生成 ECC 初装方案' },
 ];
 
 <CommandTable commands={commands} />
 
 ---
 
-## 核心工作流命令详解
+## 核心工作流命令（6）
 
 ### /plan — 需求规划
 
-规划是一切的第一步。输入自然语言需求，planner agent 输出结构化实现计划。
-
 ```bash
-/plan 给博客添加全文搜索功能，支持标题和内容搜索，分页显示结果
+/plan 给博客添加全文搜索，支持标题和内容搜索，分页显示
 ```
 
-Planner 会分析现有代码，输出包含文件清单、接口设计、实现步骤的计划。
+Planner agent 分析现有代码，理解项目模式，输出包含文件清单、接口设计、实现步骤的计划。
 
-:::tip[实战建议]
-需求复杂时用 `/multi-plan` 派多个 agent 并行规划，效率更高。
+:::tip[实战]
+需求越具体，规划越准。避免"做一个系统"这种模糊描述。复杂需求用 `/multi-plan`。
 :::
 
-### /tdd — 测试驱动开发
-
-强制 TDD 流程：**RED → GREEN → REFACTOR**。
+### /tdd — 测试驱动
 
 ```bash
 /tdd search.service
 ```
 
-1. **RED**：生成失败的测试用例
-2. **GREEN**：生成刚好通过的最小实现
-3. **REFACTOR**：在测试保护下优化代码
+强制执行：**RED**（失败测试）→ **GREEN**（最小实现）→ **REFACTOR**（优化结构）。
 
-:::warning[注意]
-tdd-guide agent 会在实现前检查测试是否真的失败。跳过测试直接写实现会被拦截。
+:::warning[硬关卡]
+会先运行测试确认失败。跳过测试直接写实现会被 tdd-guide agent 拦截。
 :::
 
 ### /code-review — 代码审查
 
-审查最近变更。也可以指定语言专用审查：
+审查最近变更的质量、安全性、模式一致性。派发 code-reviewer agent。
 
-```bash
-# 通用审查
-/code-review
-
-# 语言专用
-/python-review
-/go-review
-/kotlin-review
-```
-
-Code reviewer 检查：代码质量、安全隐患、边界条件、是否遵循项目模式。
+语言专用：`/python-review` `/go-review` `/kotlin-review` `/rust-review` `/cpp-review`
 
 ### /build-fix — 构建修复
 
-```bash
-/build-fix
-```
+分析构建日志，分组同类错误，以最小 diff 逐个修复，不做大范围重构。
 
-Build error resolver 分析错误日志，以**最小 diff** 逐个修复。语言专用：
+语言专用：`/go-build` `/rust-build` `/cpp-build` `/kotlin-build` `/flutter-build` `/gradle-build`
 
-```bash
-/go-build       # Go 构建
-/rust-build     # Rust 构建
-/cpp-build      # C++ 构建
-/kotlin-build   # Kotlin/Gradle
-```
+### /verify — 实现验证
+
+验证所有需求是否实现、测试是否通过、构建是否成功。
+
+### /quality-gate — 质量门禁
+
+运行完整质量 pipeline：lint → typecheck → test → security → build。
 
 ---
 
-## 常用场景组合
+## 测试命令（7）
 
-| 场景 | 命令序列 |
-|------|---------|
-| 新功能开发 | `/plan` → `/tdd` → `/code-review` |
-| Bug 修复 | `/tdd` → `/code-review` → `/build-fix` |
-| 安全审计 | `/security-scan` |
-| 多模块并行 | `/multi-workflow` |
-| 重构清理 | `/refactor-clean` |
-| 学习归档 | `/learn` → `/learn-eval` → `/evolve` |
+### /e2e — 端到端测试
 
-:::info[更多命令]
-完整命令列表在 ECC 插件目录 `commands/` 下。每个命令的 `.md` 文件包含了完整的行为定义。
+Playwright 自动化测试。支持生成、维护、运行 E2E 测试，管理截图/视频/Trace 产物。
+
+### /test-coverage — 覆盖率分析
+
+分析测试覆盖率缺口，识别未覆盖的关键路径，生成补充测试至目标阈值（80%+）。
+
+### 语言专项 TDD
+
+| 命令 | Agent | 用途 |
+|------|------|------|
+| `/go-test` | go-build-resolver | Go 测试 + 构建验证 |
+| `/kotlin-test` | kotlin-build-resolver | Kotlin 测试 (Kotest) |
+| `/rust-test` | rust-build-resolver | Rust 测试 (cargo test) |
+| `/cpp-test` | cpp-build-resolver | C++ 测试 (GoogleTest) |
+| `/flutter-test` | dart-build-resolver | Flutter/Dart 测试 |
+
+---
+
+## 规划命令（8）
+
+### /multi-plan — 多 Agent 并行规划
+
+大型需求拆解后派发给多个 planner agent 并行分析，最终合并方案。
+
+```bash
+/multi-plan 实现用户认证、权限管理、审计日志三个模块
+```
+
+### /multi-workflow — 多 Agent 并行开发
+
+启动完整的多 agent 开发工作流：research → plan → execute → optimize。
+
+### /multi-backend / /multi-frontend
+
+按领域限定工作流范围。后端专注 API/Data/Business Logic，前端专注 Components/Layout/Animation。
+
+### /plan-orchestrate — 计划编排
+
+读取已有计划文档，自动拆解步骤，为每步选择最佳 agent，编排执行链。
+
+### /prp-plan / /prp-implement
+
+PRP (Plan-Review-Prototype) 方式：先写 PRD → 评审 → 再规划/实现。
+
+---
+
+## 会话管理命令（6）
+
+### /save-session — 保存会话
+
+保存当前会话至 `~/.claude/session-data/`，含完整上下文，可跨天恢复。
+
+### /resume-session — 恢复会话
+
+从最新存档加载，恢复中断的工作。
+
+### /checkpoint — 创建检查点
+
+在关键节点创建验证检查点。失败时可回溯，不用从头重做。
+
+### /sessions — 会话管理
+
+管理会话列表、设置别名、查看元数据。
+
+### /aside — 旁路提问
+
+快速提问不丢失主任务上下文。"帮我查下这个 API 的用法"。
+
+### /context-budget — 上下文审计
+
+分析当前 token 使用分布：agents、skills、MCP、rules 各自的消耗。
+
+---
+
+## 学习与进化命令（9）
+
+### /learn — 提取模式
+
+从当前会话中提取可复用的编码模式，保存为 "instinct"（本能），跨会话持久。
+
+### /learn-eval — 评估学习
+
+自评估提取质量：这条 instinct 是否值得保存？是否通用？
+
+### /evolve — 进化为 Skill
+
+分析多个 instincts，建议进化为结构化 SKILL.md。
+
+### /skill-create — 从 Git 历史创建
+
+分析项目的 git 历史（commit message + code diff），提取编码模式自动生成 SKILL.md。
+
+### /skill-health — Skill 监控
+
+Skill 组合的健康仪表盘：使用频率、冲突检测、覆盖缺口。
+
+### /instinct-status / /instinct-export / /instinct-import
+
+管理已学习的 instincts：查看状态、导出备份、导入恢复。
+
+### /promote — 提升 Scope
+
+将项目级别的 instinct 提升为全局可用。
+
+---
+
+## 其他命令（32）
+
+### 基础设施
+
+| 命令 | 说明 |
+|------|------|
+| `/projects` | 列出所有已知项目的 instinct 统计 |
+| `/harness-audit` | 审计 Claude Code harness 配置，返回评分卡 |
+| `/eval` | 运行评估 harness (Eval-Driven Development) |
+| `/model-route` | 根据任务复杂度推荐最佳模型 |
+| `/project-init` | 检测项目栈，生成 ECC 初装方案 |
+
+### 自动化
+
+| 命令 | 说明 |
+|------|------|
+| `/loop-start` | 启动自主循环模式 |
+| `/loop-status` | 查看活跃循环状态 |
+| `/pm2` | 生成 PM2 进程管理命令 |
+
+### 重构
+
+| 命令 | 说明 |
+|------|------|
+| `/refactor-clean` | 检测死代码、重复代码，安全删除 |
+| `/prompt-optimize` | 分析并优化 prompt |
+
+### 文档
+
+| 命令 | 说明 |
+|------|------|
+| `/docs` | 通过 Context7 MCP 查询最新库/框架文档 |
+| `/update-docs` | 从 scripts/schemas/routes 同步文档 |
+| `/update-codemaps` | 生成 token-lean 架构 codemap |
+
+---
+
+:::info[完整命令列表]
+所有 75 个命令的 `.md` 文件在 ECC 插件目录 `commands/` 下，每个文件包含完整的行为定义。
 :::

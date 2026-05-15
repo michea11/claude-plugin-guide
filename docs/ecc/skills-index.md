@@ -1,173 +1,215 @@
-# ECC Skills 精选索引
+# ECC Skills 精选
 
-ECC 有 228 个 skill，AI 根据场景自动触发。以下按使用频率和重要度精选。
+ECC 有 228 个 skill，AI 根据场景自动触发。以下精选 24 个最常用 skill，按领域分类。
 
-## 通用开发（必装即用）
-
-### coding-standards
-写新代码时自动激活，确保遵循项目编码规范。
-
-**做什么**：
-- 命名规范（变量/函数/类命名风格）
-- 代码结构（不可变性优先、Optional 使用）
-- 文件组织（每个文件单一职责）
-
-:::note[何时触发]
-当你写任何新文件或大量修改已有文件时。
+:::tip[如何阅读]
+每个 skill 标注了真实触发条件（来自 `SKILL.md` 的 description）和实用示例。
 :::
 
-### tdd-workflow
-实现功能或修 bug 时强制执行 TDD。
+---
 
-**流程**：
+## 通用开发（4）
+
+### 1. coding-standards
+> *Baseline cross-project coding conventions for naming, readability, immutability*
+
+写任何新代码时激活。制定跨项目编码基线规范。
+
+- 命名规范（变量/函数/类）
+- 不可变性优先
+- 文件单一职责
+
+### 2. tdd-workflow
+> *Enforces test-driven development with 80%+ coverage including unit, integration, and E2E tests*
+
+实现功能、修 bug、重构时激活。强制 RED → GREEN → REFACTOR 流程。
+
 ```
 写失败测试 → 确认失败 → 最小实现 → 测试通过 → 重构
 ```
 
 :::warning[硬关卡]
-不允许跳过测试写实现。代码覆盖率低于 80% 不通过。
+跳过测试写实现会被拦截。
 :::
 
-### error-handling
-添加错误处理时提供跨语言模式指导。
+### 3. error-handling
+> *Covers typed errors, error boundaries, retries, circuit breakers, and user-facing error messages*
 
-**覆盖**：
-- 错误类型设计（typed errors）
-- 错误传播（不吞错误）
-- 用户友好错误信息
-- 日志和监控集成
+设计错误类型、添加重试逻辑、审查 API 错误处理、调试级联故障时激活。
+
+**覆盖语言**：TypeScript, Python, Go
+
+### 4. search-first
+> *Research-before-coding workflow. Search for existing tools, libraries, and patterns before writing custom code*
+
+引入新功能、添加依赖、准备写自定义工具前激活。
+
+**原则**：先搜再写，不重复造轮子。
 
 ---
 
-## 架构与设计
+## 架构与设计（4）
 
-### api-design
-设计 REST API 时自动激活。
+### 5. api-design
+> *REST API patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting*
 
-**指导内容**：
-- 资源命名（复数名词）
-- 状态码选择（200/201/400/404/500）
-- 分页设计（cursor-based vs offset）
-- 认证头规范（Bearer token）
+设计新 API、审查 API 契约、添加分页/筛选、规划 API 版本策略时激活。
 
 ```yaml
-# 好的设计
-GET    /api/users          # 列表
-POST   /api/users          # 创建
-GET    /api/users/42       # 详情
-PATCH  /api/users/42       # 部分更新
-DELETE /api/users/42       # 删除
+# 推荐
+GET    /api/users
+POST   /api/users
+GET    /api/users/42
+PATCH  /api/users/42
+DELETE /api/users/42
 ```
 
-### hexagonal-architecture
-架构设计时激活，指导端口与适配器模式。
+### 6. hexagonal-architecture
+> *Design, implement, and refactor Ports & Adapters systems with clear domain boundaries*
 
-**核心概念**：
-- 领域层不依赖基础设施
-- 接口定义在领域层，实现在基础设施层
-- 测试时可以替换任何适配器
+构建需要长期可维护性的功能、重构耦合代码、替换基础设施而不重写业务逻辑时激活。
 
-### database-migrations
-数据库 schema 变更时激活。
+**核心**：领域层不依赖框架；适配器在边缘。
 
-**安全原则**：
-- 扩展迁移 vs 收缩迁移分开
-- 大表加列用 backfill default
-- 不回滚已部署的迁移
-- 索引变更在低峰期
+### 7. backend-patterns
+> *Backend architecture patterns for Node.js, Express, and Next.js API routes*
+
+设计 API 端点、实现 Repository/Service/Controller 层、优化数据库查询（N+1）、添加缓存、设置后台任务时激活。
+
+### 8. frontend-patterns
+> *Frontend development patterns for React, Next.js, state management, performance optimization*
+
+构建 React 组件、管理状态（useState/useReducer/Zustand）、数据获取（SWR/React Query）、性能优化（memo/virtualization）、表单处理时激活。
 
 ---
 
-## 数据库专项
+## 语言与框架（8）
 
-### postgres-patterns
-PostgreSQL 查询优化、索引设计、事务管理。
+### 9. python-patterns
+> *PEP 8 standards, type hints, and best practices for building robust Python applications*
+
+写、审查、重构 Python 代码时激活。
+
+### 10. golang-patterns
+> *Idiomatic Go patterns, concurrency, error handling, and best practices*
+
+写、审查、重构 Go 代码时激活。强调简洁、并发安全、错误传播。
+
+### 11. rust-patterns
+> *Idiomatic Rust patterns, ownership, error handling, traits, and concurrency*
+
+写、审查、重构 Rust 代码时激活。强调所有权、enum 模式匹配、零成本抽象。
+
+### 12. django-patterns
+> *Django architecture patterns, REST API design with DRF, ORM best practices*
+
+构建 Django 应用、设计 DRF API、设置项目结构时激活。
+
+### 13. springboot-patterns
+> *Spring Boot architecture patterns, REST API design, layered services, JPA*
+
+构建 Spring Boot REST API、设计 controller → service → repository 层时激活。
+
+### 14. fastapi-patterns
+> *FastAPI patterns for async APIs, dependency injection, Pydantic models, OpenAPI docs*
+
+构建 FastAPI 服务、拆分 routers/schemas/dependencies 时激活。
+
+### 15. nestjs-patterns
+> *NestJS architecture patterns for modules, controllers, providers, DTO validation*
+
+构建 NestJS API、设计 module 结构、添加 guards/interceptors 时激活。
+
+### 16. swiftui-patterns
+> *SwiftUI architecture, @Observable state management, view composition, navigation*
+
+构建 SwiftUI 视图、管理状态（@State/@Observable）、设计 NavigationStack 导航时激活。
+
+---
+
+## 数据库（2）
+
+### 17. postgres-patterns
+> *Query optimization, schema design, indexing, and security. Based on Supabase best practices*
+
+写 SQL 查询或迁移、设计 schema、排查慢查询、实现 RLS、设置连接池时激活。
 
 ```sql
--- Skill 会建议这样的索引
+-- Skill 推荐的部分索引
 CREATE INDEX idx_user_email ON users(email) WHERE deleted_at IS NULL;
-
--- 而不是全表索引
-CREATE INDEX idx_user_email ON users(email);
 ```
 
-### redis-patterns
-Redis 数据结构选择、缓存策略、分布式锁。
+### 18. redis-patterns
+> *Caching strategies, distributed locks, rate limiting, pub/sub, and connection management*
 
-**常见模式**：
-- Cache-aside：查缓存 → 未命中 → 查 DB → 写缓存
-- 分布式锁：`SET lock_key value NX EX 30`
-- 限流器：滑动窗口 counter
+添加缓存、实现限流、构建分布式锁、设置 session 存储时激活。
 
 ---
 
-## DevOps
+## DevOps（3）
 
-### docker-patterns
-Dockerfile 和 Compose 配置优化。
+### 19. docker-patterns
+> *Docker Compose for local development, container security, networking, and multi-service orchestration*
 
-**最佳实践**：
+设置 Docker Compose、设计多容器架构、审查 Dockerfile 安全性和体积时激活。
+
 ```dockerfile
-# 多阶段构建
+# 多阶段构建（Skill 推荐）
 FROM node:20 AS builder
 WORKDIR /app
-COPY package*.json .
-RUN npm ci
-COPY . .
-RUN npm run build
+RUN npm ci && npm run build
 
 FROM node:20-slim
 COPY --from=builder /app/dist /app
 ```
 
-### git-workflow
-分支策略、commit 规范、merge vs rebase。
+### 20. git-workflow
+> *Branching strategies, commit conventions, merge vs rebase, and conflict resolution*
+
+设置 Git 工作流、选择分支策略、写 commit message、解决合并冲突时激活。
 
 :::tip
 小 PR 好审。超过 400 行的 PR 拆分为多个。
 :::
 
----
+### 21. deployment-patterns
+> *CI/CD pipeline patterns, Docker containerization, health checks, rollback strategies, and production readiness*
 
-## 安全
-
-### security-review
-处理用户输入、认证、API、敏感数据时激活。
-
-**检查项**：
-- SQL 注入防护（参数化查询）
-- XSS 防护（输出编码）
-- CSRF token 验证
-- 密码加密存储（bcrypt/argon2）
-- 密钥不硬编码
-
-### security-bounty-hunter
-主动安全审计模式，扫描整个仓库。
-
-**扫描范围**：
-- 硬编码密钥和 token
-- SSRF 漏洞
-- 不安全加密算法（MD5/SHA1）
-- 权限绕过风险
+设置 CI/CD pipeline、容器化应用、规划部署策略（blue-green/canary/rolling）时激活。
 
 ---
 
-## AI/ML 工程
+## 安全（2）
 
-### agentic-engineering
-构建 AI agent 应用时激活。覆盖 eval-first 开发、成本感知、工具设计。
+### 22. security-review
+> *Comprehensive security checklist: authentication, user input, secrets, API endpoints, payment/sensitive features*
 
-### mle-workflow
-ML 工程项目规范：数据契约、特征管道、训练复现、模型 serving。
+实现认证、处理用户输入、创建 API、操作密钥、集成第三方 API 时激活。
+
+**检查范围**：SQL 注入、XSS、CSRF、密钥硬编码、加密算法。
+
+### 23. security-bounty-hunter
+> *Hunt for exploitable, bounty-worthy security issues in repositories*
+
+安全审计模式下全仓库扫描，检测可利用漏洞。
 
 ---
 
-## 查看完整列表
+## AI/ML 工程（1）
 
-228 个 skill 的完整目录在：
+### 24. agentic-engineering
+> *Operate as an agentic engineer using eval-first execution, decomposition, and cost-aware model routing*
+
+AI agent 大量参与编码、人类控制质量和风险的工程工作流中激活。
+
+**原则**：定义完成标准 → 分解为 agent 尺寸任务 → 按复杂度路由模型 → evals 验证。
+
+---
+
+## 完整列表
+
+全部 228 个 skill 在：
 
 ```bash
 ls ~/.claude/plugins/cache/ecc/ecc/2.0.0-rc.1/skills/
 ```
-
-每个 skill 的 `SKILL.md` 包含完整的触发条件和使用说明。
