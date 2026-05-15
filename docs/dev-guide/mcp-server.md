@@ -1,14 +1,14 @@
 # 配置 MCP Server
 
-## 什么是 MCP
-
 MCP (Model Context Protocol) 让 Claude Code 连接外部工具和服务。
 
-## 配置位置
+:::tip[常见用途]
+连接 GitHub、连接数据库、浏览器自动化、部署管理——通过 MCP 统一协议。
+:::
 
-插件根目录的 `.mcp.json` 或 `plugin.json` 的 `mcpServers` 字段。
+## 配置
 
-## 配置格式
+`.mcp.json` 或 `plugin.json` 的 `mcpServers` 字段：
 
 ```json
 {
@@ -25,14 +25,14 @@ MCP (Model Context Protocol) 让 Claude Code 连接外部工具和服务。
 
 | Server | 用途 |
 |------|------|
-| GitHub | 仓库操作 |
-| Playwright | 浏览器自动化 |
-| Supabase | 数据库管理 |
-| Vercel | 部署管理 |
-| Context7 | 文档查询 |
+| GitHub | 仓库操作和 PR 管理 |
+| Playwright | 浏览器自动化测试 |
+| Supabase | 数据库和认证管理 |
+| Context7 | 实时文档查询 |
+| Exa | 网络搜索 |
 
-## 配置提示
+## 提示
 
 - 用 `${CLAUDE_PLUGIN_ROOT}` 引用本地 server 二进制
-- MCP server 在会话启动时连接
-- 每个 server 在独立进程中运行
+- MCP server 会话启动时连接，独立进程运行
+- 每个 server 需要单独配置
