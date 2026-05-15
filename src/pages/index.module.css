@@ -1,114 +1,210 @@
-.heroBanner {
-  padding: 4rem 0;
+/* Hero */
+.hero {
+  padding: 5rem 0 4rem;
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-dark) 100%);
+  color: white;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.heroTitle {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
 }
 
-.buttons {
+.heroSubtitle {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+.heroDesc {
+  font-size: 1rem;
+  opacity: 0.8;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+}
+
+.heroButtons {
   display: flex;
-  align-items: center;
+  gap: 12px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
-.features {
-  padding: 3rem 0;
-}
-
-.feature {
-  margin-bottom: 2rem;
-}
-
-.featureCard {
-  background: var(--ifm-card-background-color);
-  border: 1px solid var(--ifm-color-emphasis-200);
+.heroButtons a {
   border-radius: 8px;
-  padding: 24px;
-  height: 100%;
-}
-
-.featureCard h3 {
-  font-size: 18px;
-  margin-bottom: 12px;
-}
-
-.featureCard p {
-  font-size: 14px;
-  color: var(--ifm-color-emphasis-700);
-  margin-bottom: 16px;
-  line-height: 1.6;
-  min-height: 60px;
-}
-
-.featureLinks {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.pathSection {
-  padding: 3rem 0;
-  background: var(--ifm-color-emphasis-100);
-}
-
-.pathTitle {
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 32px;
-}
-
-.path {
-  display: flex;
-  gap: 0;
-  align-items: flex-start;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.pathStage {
-  flex: 0 0 180px;
-  text-align: center;
-  padding: 20px 12px;
-  position: relative;
-}
-
-.pathEmoji {
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-.pathStage h3 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.pathStage p {
-  font-size: 12px;
-  color: var(--ifm-color-emphasis-600);
-  line-height: 1.4;
-}
-
-.pathArrow {
-  position: absolute;
-  right: -8px;
-  top: 35%;
-  font-size: 20px;
-  color: var(--ifm-color-emphasis-400);
 }
 
 @media (max-width: 996px) {
-  .path {
-    flex-direction: column;
-    align-items: center;
-  }
-  .pathArrow {
-    display: none;
-  }
+  .hero { padding: 3rem 0 2.5rem; }
+  .heroTitle { font-size: 1.8rem; }
+}
+
+/* Identity table */
+.whoSection {
+  padding: 4rem 0;
+  background: var(--ifm-background-color);
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 2rem;
+}
+
+.identityTable {
+  max-width: 780px;
+  margin: 0 auto;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.identityRow {
+  display: flex;
+  border-bottom: 1px solid var(--ifm-color-emphasis-150);
+  transition: background 0.15s;
+}
+
+.identityRow:last-child {
+  border-bottom: none;
+}
+
+.identityRow:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.identityWho {
+  flex: 0 0 180px;
+  padding: 14px 18px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--ifm-color-emphasis-100);
+  border-right: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.identityGain {
+  flex: 1;
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .identityRow { flex-direction: column; }
+  .identityWho { flex: auto; border-right: none; border-bottom: 1px solid var(--ifm-color-emphasis-200); }
+}
+
+/* Learning path */
+.pathSection {
+  padding: 4rem 0;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.pathGrid {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pathCard {
+  flex: 0 0 200px;
+  background: var(--ifm-card-background-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  padding: 24px 16px;
+  text-align: center;
+  text-decoration: none !important;
+  color: inherit;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.pathCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.pathEmoji {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.pathCardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.pathCardDesc {
+  font-size: 0.82rem;
+  color: var(--ifm-color-emphasis-600);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.pathArrow {
+  display: none;
+}
+
+/* Next steps */
+.nextSection {
+  padding: 4rem 0;
+  background: var(--ifm-background-color);
+}
+
+.nextGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.nextCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  text-decoration: none !important;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.nextCard:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-decoration: none;
+  color: inherit;
+}
+
+.nextEmoji {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.nextTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.nextDesc {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+  margin: 0;
+}
+
+.nextArrow {
+  flex-shrink: 0;
+  font-size: 1rem;
+  color: var(--ifm-color-emphasis-400);
+  margin-left: auto;
 }
