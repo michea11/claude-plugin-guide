@@ -20,6 +20,7 @@ const sidebars: SidebarsConfig = {
         'concepts/agent',
         'concepts/command',
         'concepts/hook',
+        'concepts/mcp',
         'concepts/component-reference',
       ],
     },
