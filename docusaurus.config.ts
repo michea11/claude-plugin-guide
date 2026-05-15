@@ -6,10 +6,10 @@ const config: Config = {
   title: 'Claude Code 插件学习指南',
   tagline: '从入门到精通 Claude Code 插件生态',
   favicon: 'img/favicon.ico',
-  url: 'https://your-github-username.github.io',
-  baseUrl: '/claude-plugin-site/',
-  organizationName: 'your-github-username',
-  projectName: 'claude-plugin-site',
+  url: 'https://michea11.github.io',
+  baseUrl: '/claude-plugin-guide/',
+  organizationName: 'michea11',
+  projectName: 'claude-plugin-guide',
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
@@ -31,7 +31,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/your-github-username/claude-plugin-site/tree/main/',
+          editUrl: 'https://github.com/michea11/claude-plugin-guide/tree/main/',
           showLastUpdateTime: true,
         },
         blog: false,
@@ -55,7 +55,7 @@ const config: Config = {
           label: '文档',
         },
         {
-          href: 'https://github.com/your-github-username/claude-plugin-site',
+          href: 'https://github.com/michea11/claude-plugin-guide',
           label: 'GitHub',
           position: 'right',
         },
