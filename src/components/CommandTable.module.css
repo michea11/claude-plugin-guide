@@ -1,26 +1,68 @@
+.wrapper {
+  margin: 20px 0;
+}
+
 .controls {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
 .search {
   flex: 1;
-  padding: 8px 12px;
+  min-width: 180px;
+  padding: 9px 14px;
   border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   background: var(--ifm-background-color);
   color: var(--ifm-font-color-base);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search:focus {
+  border-color: var(--ifm-color-primary);
 }
 
 .select {
-  padding: 8px 12px;
+  padding: 9px 14px;
   border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   background: var(--ifm-background-color);
   color: var(--ifm-font-color-base);
+  outline: none;
+  cursor: pointer;
+}
+
+.clearBtn {
+  padding: 9px 16px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  font-size: 13px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-color-emphasis-600);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.clearBtn:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.count {
+  font-size: 13px;
+  color: var(--ifm-color-emphasis-500);
+  margin-bottom: 10px;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ifm-color-emphasis-500);
+  font-size: 15px;
 }
 
 .table {
@@ -34,18 +76,47 @@
   padding: 10px 12px;
   border-bottom: 2px solid var(--ifm-color-emphasis-300);
   font-weight: 600;
+  font-size: 13px;
+  color: var(--ifm-color-emphasis-600);
 }
 
+.thCmd { width: 16%; }
+.thCat { width: 14%; }
+
 .table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--ifm-color-emphasis-150);
+  vertical-align: top;
+}
+
+.table tbody tr:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.cmdName {
+  font-weight: 600;
+  font-size: 13.5px;
+  white-space: nowrap;
 }
 
 .badge {
   display: inline-block;
-  background: var(--ifm-color-emphasis-200);
-  color: var(--ifm-color-emphasis-800);
-  padding: 1px 8px;
+  padding: 2px 10px;
   border-radius: 10px;
   font-size: 12px;
+  font-weight: 500;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.desc {
+  font-size: 13.5px;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .controls { flex-direction: column; }
+  .thCmd, .thCat { width: auto; }
+  .cmdName, .badge { white-space: normal; }
 }

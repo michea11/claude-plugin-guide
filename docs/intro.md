@@ -11,7 +11,7 @@ slug: /
 
 | 你的情况 | 从哪开始 |
 |---------|--------|
-| 完全没用过插件 | [什么是插件](quickstart/what-is-plugin) |
-| 装好了想看用法 | [ECC 核心工作流](ecc/core-workflow) |
-| 想建立工程流程 | [Superpowers 总览](superpowers/overview) |
-| 想自己开发插件 | [创建 Skill](dev-guide/create-skill) |
+| 完全没用过插件 | [什么是插件](/docs/quickstart/what-is-plugin) |
+| 装好了想看用法 | [ECC 核心工作流](/docs/ecc/core-workflow) |
+| 想建立工程流程 | [Superpowers 总览](/docs/superpowers/overview) |
+| 想自己开发插件 | [创建 Skill](/docs/dev-guide/create-skill) |
